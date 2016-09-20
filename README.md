@@ -26,6 +26,10 @@ Redirector is a Rails engine that adds a piece of middleware to the top of your 
 
 `preserve_query`: Pass the query string parameters through from the source to the target URL.
 
+`use_environment_variables`: This options disable querying to request_environment_rules table.
+
+`blacklisted_extensions`: Skip queries for request_path with extension ['.js', '.css', '.jpg', '.png', '.woff', '.ico']
+
 You can set these inside your configuration in `config/application.rb` of your Rails application like so:
 
 ```ruby

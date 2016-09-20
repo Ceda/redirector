@@ -7,9 +7,14 @@ module Redirector
     end
 
     initializer "redirector.apply_options" do |app|
-      Redirector.include_query_in_source = app.config.redirector.include_query_in_source || false
-      Redirector.preserve_query          = app.config.redirector.preserve_query || false
-      Redirector.silence_sql_logs        = app.config.redirector.silence_sql_logs || false
+      config = app.config.redirector
+
+      Redirector.include_query_in_source   = config.include_query_in_source || false
+      Redirector.preserve_query            = config.preserve_query || false
+      Redirector.silence_sql_logs          = config.silence_sql_logs || false
+
+      Redirector.use_environment_variables = config.use_environment_variables.nil? ? true : config.use_environment_variables
+      Redirector.blacklisted_extensions    = config.blacklisted_extensions || []
     end
   end
 end

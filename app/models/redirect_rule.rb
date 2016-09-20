@@ -40,6 +40,9 @@ class RedirectRule < ActiveRecord::Base
   def self.match_for(source, environment)
     match_scope = where(match_sql_condition.strip, {:true => true, :false => false, :source => source})
     match_scope = match_scope.order('redirect_rules.source_is_regex ASC, LENGTH(redirect_rules.source) DESC')
+
+    return match_scope.first unless Redirector.use_environment_variables
+
     match_scope = match_scope.includes(:request_environment_rules)
     match_scope = match_scope.references(:request_environment_rules) if Rails.version.to_i == 4
     match_scope.detect do |rule|
@@ -48,6 +51,8 @@ class RedirectRule < ActiveRecord::Base
   end
 
   def self.destination_for(source, environment)
+    return if Redirector.blacklisted_extensions.include? File.extname(source)
+
     rule = match_for(source, environment)
     rule.evaluated_destination_for(source) if rule
   end
